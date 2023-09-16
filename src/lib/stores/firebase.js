@@ -6,6 +6,8 @@ const _is_loading = writable(false);
 
 const is_loading = { subscribe: _is_loading.subscribe };
 
+const v = 0;
+
 function create_auth_store() {
 	/** @type {import('firebase/auth').Auth} */
 	let auth;
@@ -122,7 +124,7 @@ function create_users_store() {
 		async list_all() {
 			const { collection, getDocs, query, where } = await import('firebase/firestore');
 
-			const snapshot = await getDocs(query(collection(await db(), 'users'), where('v', '==', 0)));
+			const snapshot = await getDocs(query(collection(await db(), 'users'), where('v', '==', v)));
 
 			update((value) => ({ ...value, list: snapshot.docs.map((d) => d.data()) }));
 		},
@@ -145,7 +147,7 @@ function create_users_store() {
 
 			const ref = doc(collection(await db(), 'users'));
 
-			await setDoc(ref, { ...data, id: ref.id, v: 0 })
+			await setDoc(ref, { ...data, id: ref.id, v })
 				.then((docRef) => alerts.success('Mitarbeiter wurde erstellt.'))
 				.catch((error) => alerts.danger('Mitarbeiter konnte nicht aktualisiert werden.'))
 				.finally(() => _is_loading.set(false));
@@ -192,7 +194,7 @@ function create_shops_store() {
 		async list_all() {
 			const { collection, getDocs, query, where } = await import('firebase/firestore');
 
-			const snapshot = await getDocs(query(collection(await db(), 'shops'), where('v', '==', 0)));
+			const snapshot = await getDocs(query(collection(await db(), 'shops'), where('v', '==', v)));
 
 			update((value) => ({ ...value, list: snapshot.docs.map((d) => d.data()) }));
 		},
@@ -215,7 +217,7 @@ function create_shops_store() {
 
 			const ref = doc(collection(await db(), 'shops'));
 
-			await setDoc(ref, { ...data, id: ref.id, v: 0 })
+			await setDoc(ref, { ...data, id: ref.id, v })
 				.then((docRef) => alerts.success('Filiale wurde erstellt.'))
 				.catch((error) => alerts.danger('Filiale konnte nicht aktualisiert werden.'))
 				.finally(() => _is_loading.set(false));
@@ -239,6 +241,75 @@ function create_shops_store() {
 			const { doc, deleteDoc } = await import('firebase/firestore');
 
 			if (confirm('Bist Du sicher, dass Du diese Filiale löschen möchtest?')) {
+				await deleteDoc(doc(await db(), 'shops', id));
+			}
+		}
+	};
+}
+
+function create_events_store() {
+	const { subscribe, set, update } = writable({ list: [] });
+
+	async function db() {
+		const { app } = await import('../firebase_app');
+		const { getFirestore } = await import('firebase/firestore');
+
+		return getFirestore(app);
+	}
+
+	return {
+		subscribe,
+
+		async list_all() {
+			const { collection, getDocs, query, where } = await import('firebase/firestore');
+
+			const snapshot = await getDocs(query(collection(await db(), 'events'), where('v', '==', v)));
+
+			update((value) => ({ ...value, list: snapshot.docs.map((d) => d.data()) }));
+		},
+		async get(id) {
+			const { doc, getDoc } = await import('firebase/firestore');
+
+			const ref = doc(await db(), 'events', id);
+			const snapshot = await getDoc(ref);
+
+			if (snapshot.exists()) {
+				update((value) => ({ ...value, shop: snapshot.data() }));
+			} else {
+				alerts.danger('Event existiert nicht.');
+			}
+		},
+		async create(data) {
+			_is_loading.set(true);
+
+			const { doc, collection, setDoc } = await import('firebase/firestore');
+
+			const ref = doc(collection(await db(), 'shops'));
+
+			await setDoc(ref, { ...data, id: ref.id, v })
+				.then((docRef) => alerts.success('Event wurde erstellt.'))
+				.catch((error) => alerts.danger('Event konnte nicht aktualisiert werden.'))
+				.finally(() => _is_loading.set(false));
+		},
+		async update(id, data) {
+			_is_loading.set(true);
+
+			const { doc, updateDoc } = await import('firebase/firestore');
+
+			const doc_ref = doc(await db(), 'shops', id);
+
+			await updateDoc(doc_ref, data)
+				.then((docRef) => alerts.success('Event wurde aktualisiert.'))
+				.catch((error) => alerts.danger('Event konnte nicht aktualisiert werden.'))
+				.finally(() => _is_loading.set(false));
+		},
+		/**
+		 * @param {string} id
+		 */
+		async delete(id) {
+			const { doc, deleteDoc } = await import('firebase/firestore');
+
+			if (confirm('Bist Du sicher, dass Du dieses Event löschen möchtest?')) {
 				await deleteDoc(doc(await db(), 'shops', id));
 			}
 		}

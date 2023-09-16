@@ -1,8 +1,10 @@
 <script>
 	import Combobox from '$lib/components/Combobox.svelte';
+	import Avatar from '$lib/components/Avatar.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import ImageSelector from '$lib/components/ImageSelector.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { users } from '$lib/stores/firebase.js';
 
 	/** @type {File} */
 	let file;
@@ -13,7 +15,7 @@
 		phone: '',
 		address: '',
 		image: null,
-		manager: null
+		manager_id: null
 	};
 
 	export let button_label = 'Save';
@@ -59,27 +61,27 @@
 
 	<div class="row mt-4">
 		<div class="col">
-			<Combobox
-				label="Manager"
-				name="manager"
-				placeholder=""
-				options={[
-					{ text: 'Karim', email: 'karim@example.com', image: '', value: '1' },
-					{ text: 'Ardit', email: 'ardit@example.com', image: '', value: '2' }
-				]}
-			>
-				<div slot="option" let:option class="d-flex gap-3 align-items-center">
-					<img
-						src={option.image || '/images/profile-circle.svg'}
-						alt=""
-						style="width:3rem; height:3rem; border-radius:9999px"
-					/>
-					<div>
-						<div style="font-weight: bold;">{option.text}</div>
-						<div>{option.email}</div>
+			{#await users.list_all then _}
+				<Combobox
+					label="Manager"
+					name="manager"
+					bind:value={data.manager_id}
+					options={$users.list.map((u) => ({
+						text: u.name,
+						value: u.id,
+						email: u.email,
+						image_url: ''
+					}))}
+				>
+					<div slot="option" let:option class="d-flex gap-3 align-items-center">
+						<Avatar image_url={option.image_url} />
+						<div>
+							<div style="font-weight: bold;">{option.text}</div>
+							<div>{option.email}</div>
+						</div>
 					</div>
-				</div>
-			</Combobox>
+				</Combobox>
+			{/await}
 		</div>
 	</div>
 

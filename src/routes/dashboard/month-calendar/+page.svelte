@@ -70,8 +70,12 @@
 
 <div class="hstack justify-content-between py-3">
 	<h1>Kalender</h1>
-	<button class="btn btn-lg btn-success rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#EventFormModal">
-		<i class="bi bi-plus"></i>
+	<button
+		class="btn btn-lg btn-success rounded-pill px-4"
+		data-bs-toggle="modal"
+		data-bs-target="#EventFormModal"
+	>
+		<i class="bi bi-plus" />
 		Event erstellen
 	</button>
 </div>
@@ -180,7 +184,10 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
 			</div>
 			<div class="modal-body">
-				<EventForm />
+				<EventForm
+					on:submit={on_submit}
+					button_label={$is_loading ? 'Einen Moment...' : 'Erstellen'}
+				/>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">

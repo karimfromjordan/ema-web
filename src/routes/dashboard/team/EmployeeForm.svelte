@@ -2,8 +2,11 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/Icon.svelte';
+	import Avatar from '$lib/components/Avatar.svelte';
+	import Combobox from '$lib/components/Combobox.svelte';
 	import ImageSelector from '$lib/components/ImageSelector.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { shops } from '$lib/stores/firebase.js';
 
 	export let user = {
 		email: '',
@@ -15,7 +18,7 @@
 		form_of_employment: 'Vollzeit',
 		holidays_per_year: 20,
 		profile_image: null,
-		default_store: null
+		default_shop_id: null
 	};
 
 	export let button_label = 'Save';
@@ -81,14 +84,27 @@
 			</select>
 		</div>
 		<div class="col-md-6">
-			<label class="form-label" for="default_store">Filiale</label>
-
-			<select bind:value={user.default_store} id="default_store" class="form-select">
-				<option value="" />
-				{#each [] as shop}
-					<option value={shop.uid}>{shop.name}</option>
-				{/each}
-			</select>
+			{#await shops.list_all() then _}
+				<Combobox
+					label="Filiale"
+					name="default_shop_id"
+					bind:value={user.default_shop_id}
+					options={$shops.list.map((s) => ({
+						text: s.name,
+						value: s.id,
+						shop: s,
+						image_url: ''
+					}))}
+				>
+					<div slot="option" let:option class="d-flex gap-3 align-items-center">
+						<Avatar image_url={option.image_url} />
+						<div>
+							<div style="font-weight: bold;">{option.text}</div>
+							<div>{option.shop.address}</div>
+						</div>
+					</div>
+				</Combobox>
+			{/await}
 		</div>
 		<div class="col-md-6">
 			<label class="form-label" for="form_of_employment">Arbeitszeit</label>
