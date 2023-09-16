@@ -15,7 +15,18 @@
 		});
 	});
 
-	$: if ($auth === null) goto('/login');
+	$: switch ($auth) {
+		case undefined:
+			break;
+
+		case null:
+			goto('/login');
+			break;
+
+		default:
+			goto('/dashboard');
+			break;
+	}
 </script>
 
 <Alerts />
