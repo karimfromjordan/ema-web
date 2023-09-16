@@ -1,5 +1,13 @@
 <script>
 	import ShopForm from '../ShopForm.svelte';
+
+	import { is_loading, shops } from '$lib/stores/firebase.js';
+	import { goto } from '$app/navigation';
+
+	async function on_submit(e) {
+		await shops.create(e.detail);
+		goto('/dashboard/shops');
+	}
 </script>
 
 <div class="card border-0 shadow-sm">
@@ -8,7 +16,6 @@
 			<h1 class="fs-5">Filiale erstellen</h1>
 		</div>
 
-		<ShopForm button_label="Erstellen" />
+		<ShopForm on:submit={on_submit} button_label={$is_loading ? 'Einen Moment...' : 'Erstellen'} />
 	</div>
 </div>
-

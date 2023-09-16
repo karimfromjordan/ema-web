@@ -47,10 +47,11 @@
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/Icon.svelte';
 	import config from '$lib/config';
+	import { auth } from '$lib/stores/firebase';
 
 	const user = {
-		email: 'name@example.com',
-		name: 'Karim'
+		email: 'demo@example.com',
+		name: 'Demo'
 	};
 
 	function go_fullscreen() {
@@ -233,7 +234,7 @@
 							</li>
 							<div class="dropdown-divider" />
 							<li>
-								<button class="dropdown-item">
+								<button class="dropdown-item" on:click={auth.sign_out}>
 									<Icon name="logout" class="align-middle" />
 									Abmelden
 								</button>

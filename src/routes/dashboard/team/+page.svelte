@@ -1,5 +1,5 @@
 <script>
-	const users = [
+	const _users = [
 		{
 			id: 1,
 			name: 'Karim Jordan',
@@ -46,12 +46,16 @@
 			position: 'Verkäufer'
 		}
 	];
+
+	import { is_loading, users } from '$lib/stores/firebase.js';
+
+	users.list_all();
 </script>
 
 <div class="d-flex justify-content-between align-items-end py-3">
 	<h1>Mitarbeiter</h1>
 	<a href="/dashboard/team/create" class="btn btn-lg btn-success rounded-pill px-4">
-		<i class="bi bi-plus"></i>
+		<i class="bi bi-plus" />
 		Mitarbeiter erstellen
 	</a>
 </div>
@@ -70,7 +74,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each users as user (user.id)}
+					{#each $users.list || [] as user}
 						<tr>
 							<td>
 								<a
@@ -84,7 +88,7 @@
 									/>
 									<div>
 										<div class="fw-semibold">{user.name}</div>
-										<div>{user.position}</div>
+										<div>{user.form_of_employment}</div>
 									</div>
 								</a>
 							</td>
@@ -101,7 +105,7 @@
 							</td>
 							<td>
 								<a class="text-decoration-none text-body" href="/dashboard/team/{user.id}">
-									{user.store}
+									{user.store ?? ''}
 								</a>
 							</td>
 							<td />

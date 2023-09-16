@@ -1,5 +1,13 @@
 <script>
 	import EmployeeForm from '../EmployeeForm.svelte';
+
+	import { is_loading, users } from '$lib/stores/firebase.js';
+	import { goto } from '$app/navigation';
+
+	async function on_submit(e) {
+		await users.create(e.detail);
+		goto('/dashboard/team');
+	}
 </script>
 
 <div class="card border-0 shadow-sm">
@@ -8,6 +16,9 @@
 			<h1 class="fs-5">Mitarbeiter erstellen</h1>
 		</div>
 
-		<EmployeeForm button_label="Erstellen" />
+		<EmployeeForm
+			on:submit={on_submit}
+			button_label={$is_loading ? 'Einen Moment...' : 'Erstellen'}
+		/>
 	</div>
 </div>

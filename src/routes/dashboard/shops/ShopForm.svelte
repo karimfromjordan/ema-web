@@ -2,6 +2,7 @@
 	import Combobox from '$lib/components/Combobox.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import ImageSelector from '$lib/components/ImageSelector.svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	/** @type {File} */
 	let file;
@@ -18,9 +19,11 @@
 	export let button_label = 'Save';
 
 	export let is_loading = false;
+
+	const dispatch = createEventDispatcher();
 </script>
 
-<form on:submit>
+<form on:submit|preventDefault={() => dispatch('submit', data)}>
 	<div class="row g-3">
 		<div class="col-md-6 vstack gap-3">
 			<div>

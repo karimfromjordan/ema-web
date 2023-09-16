@@ -2,7 +2,19 @@
 	import AvatarList from '$lib/components/AvatarList.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 
-	const shops = [
+	import { is_loading, shops } from '$lib/stores/firebase.js';
+
+	shops.list_all();
+
+	const employees=  [
+				{
+					id: 1,
+					image_url: 'https://i.pravatar.cc/300',
+					name: 'Karim Jordan'
+				}
+			]
+
+	const _shops = [
 		{
 			id: 1,
 			name: 'Hauptfiliale',
@@ -101,14 +113,10 @@
 </div>
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
-	{#each shops as shop (shop.id)}
+	{#each $shops.list ?? [] as shop (shop.id)}
 		<div class="col">
 			<div class="card border-0 shadow-sm text-decoration-none">
-				<img
-					class="card-img-top p-3"
-					src={shop.image || '/images/store-placeholder.png'}
-					alt=""
-				/>
+				<img class="card-img-top p-3" src={shop.image || '/images/store-placeholder.png'} alt="" />
 				<div class="card-body">
 					<h2 class="card-title fw-semibold fs-5">{shop.name}</h2>
 					<div class="card-text text-secondary">
@@ -125,7 +133,7 @@
 					class="card-footer text-body-secondary d-flex justify-content-between align-items-center"
 				>
 					<AvatarList
-						avatars={shop.employees.map((e) => ({
+						avatars={employees.map((e) => ({
 							image_url: e.image_url,
 							title: e.name,
 							circle: true,

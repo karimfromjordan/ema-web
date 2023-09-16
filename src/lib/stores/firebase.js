@@ -109,7 +109,7 @@ function create_auth_store() {
 function create_users_store() {
 	const { subscribe, set, update } = writable({ list: [] });
 
-	async function get_db() {
+	async function db() {
 		const { app } = await import('../firebase_app');
 		const { getFirestore } = await import('firebase/firestore');
 
@@ -120,51 +120,133 @@ function create_users_store() {
 		subscribe,
 
 		async list_all() {
-			const { collection, getDocs } = await import('firebase/firestore');
+			const { collection, getDocs, query, where } = await import('firebase/firestore');
 
-			const query_snapshot = await getDocs(collection(await get_db(), 'users'));
+			const snapshot = await getDocs(query(collection(await db(), 'users'), where('v', '==', 0)));
 
-			update((value) => ({ ...value, list: query_snapshot.docs.map((d) => d.data()) }));
+			update((value) => ({ ...value, list: snapshot.docs.map((d) => d.data()) }));
 		},
-		async get(uid) {
+		async get(id) {
 			const { doc, getDoc } = await import('firebase/firestore');
 
-			const doc_ref = doc(await get_db(), 'users', uid);
-			const doc_snap = await getDoc(doc_ref);
+			const doc_ref = doc(await db(), 'users', id);
+			const snapshot = await getDoc(doc_ref);
 
-			if (doc_snap.exists()) {
-				update((value) => ({ ...value, user: doc_snap.data() }));
+			if (snapshot.exists()) {
+				update((value) => ({ ...value, user: snapshot.data() }));
 			} else {
 				alerts.danger('Benutzer existiert nicht.');
 			}
 		},
-		async update(uid, data) {
+		async create(data) {
+			_is_loading.set(true);
+
+			const { doc, collection, setDoc } = await import('firebase/firestore');
+
+			const ref = doc(collection(await db(), 'users'));
+
+			await setDoc(ref, { ...data, id: ref.id, v: 0 })
+				.then((docRef) => alerts.success('Mitarbeiter wurde erstellt.'))
+				.catch((error) => alerts.danger('Mitarbeiter konnte nicht aktualisiert werden.'))
+				.finally(() => _is_loading.set(false));
+		},
+		async update(id, data) {
 			_is_loading.set(true);
 
 			const { doc, updateDoc } = await import('firebase/firestore');
 
-			const doc_ref = doc(await get_db(), 'users', uid);
+			const doc_ref = doc(await db(), 'users', id);
 
-			updateDoc(doc_ref, data)
-				.then((docRef) => alerts.success('Benutzer wurde aktualisiert.'))
-				.catch((error) => alerts.danger('Benutzer konnte nicht aktualisiert werden.'))
+			await updateDoc(doc_ref, data)
+				.then((docRef) => alerts.success('Mitarbeiter wurde aktualisiert.'))
+				.catch((error) => alerts.danger('Mitarbeiter konnte nicht aktualisiert werden.'))
 				.finally(() => _is_loading.set(false));
 		},
 		/**
-		 * @param {string} uid
+		 * @param {string} id
 		 */
-		async delete(uid) {
+		async delete(id) {
 			const { doc, deleteDoc } = await import('firebase/firestore');
 
-			if (confirm('Bist Du sicher, dass Du diesen Benutzer löschen möchtest?')) {
-				await deleteDoc(doc(await get_db(), 'users', uid));
+			if (confirm('Bist Du sicher, dass Du diesen Mitarbeiter löschen möchtest?')) {
+				await deleteDoc(doc(await db(), 'users', id));
 			}
 		},
 		async reset_password(id) {}
 	};
 }
 
+function create_shops_store() {
+	const { subscribe, set, update } = writable({ list: [] });
+
+	async function db() {
+		const { app } = await import('../firebase_app');
+		const { getFirestore } = await import('firebase/firestore');
+
+		return getFirestore(app);
+	}
+
+	return {
+		subscribe,
+
+		async list_all() {
+			const { collection, getDocs, query, where } = await import('firebase/firestore');
+
+			const snapshot = await getDocs(query(collection(await db(), 'shops'), where('v', '==', 0)));
+
+			update((value) => ({ ...value, list: snapshot.docs.map((d) => d.data()) }));
+		},
+		async get(id) {
+			const { doc, getDoc } = await import('firebase/firestore');
+
+			const ref = doc(await db(), 'shops', id);
+			const snapshot = await getDoc(ref);
+
+			if (snapshot.exists()) {
+				update((value) => ({ ...value, shop: snapshot.data() }));
+			} else {
+				alerts.danger('Filiale existiert nicht.');
+			}
+		},
+		async create(data) {
+			_is_loading.set(true);
+
+			const { doc, collection, setDoc } = await import('firebase/firestore');
+
+			const ref = doc(collection(await db(), 'shops'));
+
+			await setDoc(ref, { ...data, id: ref.id, v: 0 })
+				.then((docRef) => alerts.success('Filiale wurde erstellt.'))
+				.catch((error) => alerts.danger('Filiale konnte nicht aktualisiert werden.'))
+				.finally(() => _is_loading.set(false));
+		},
+		async update(id, data) {
+			_is_loading.set(true);
+
+			const { doc, updateDoc } = await import('firebase/firestore');
+
+			const doc_ref = doc(await db(), 'shops', id);
+
+			await updateDoc(doc_ref, data)
+				.then((docRef) => alerts.success('Mitarbeiter wurde aktualisiert.'))
+				.catch((error) => alerts.danger('Mitarbeiter konnte nicht aktualisiert werden.'))
+				.finally(() => _is_loading.set(false));
+		},
+		/**
+		 * @param {string} id
+		 */
+		async delete(id) {
+			const { doc, deleteDoc } = await import('firebase/firestore');
+
+			if (confirm('Bist Du sicher, dass Du diese Filiale löschen möchtest?')) {
+				await deleteDoc(doc(await db(), 'shops', id));
+			}
+		}
+	};
+}
+
 const auth = create_auth_store();
 const users = create_users_store();
+const shops = create_shops_store();
 
-export { is_loading, auth, users };
+export { is_loading, auth, users, shops };

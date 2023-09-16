@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/Icon.svelte';
 	import ImageSelector from '$lib/components/ImageSelector.svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let user = {
 		email: '',
@@ -10,22 +11,27 @@
 		phone: '',
 		address: '',
 		born_at: null,
-		employeeRole: 1,
-		employement_form: '1',
-		holydays_per_year: 20,
+		position: 'Verkäufer',
+		form_of_employment: 'Vollzeit',
+		holidays_per_year: 20,
 		profile_image: null,
 		default_store: null
 	};
 
 	export let button_label = 'Save';
-
 	export let is_loading = false;
 
 	/** @type {File} */
 	let file;
+
+	const dispatch = createEventDispatcher();
+
+	function on_submit(event) {
+		dispatch('submit', user);
+	}
 </script>
 
-<form on:submit>
+<form on:submit|preventDefault={on_submit}>
 	<div class="row g-3">
 		<div class="col-md-6 vstack gap-3">
 			<div>
@@ -66,12 +72,12 @@
 
 	<div class="row g-3 mt-4">
 		<div class="col-md-6">
-			<label class="form-label" for="employement_form">Position</label>
-			<select class="form-select" id="employement_form" bind:value={user.employement_form}>
-				<option value="1">Manager</option>
-				<option value="2">Verkäufer</option>
-				<option value="3">Azubi</option>
-				<option value="4">Entwickler</option>
+			<label class="form-label" for="position">Position</label>
+			<select class="form-select" id="position" bind:value={user.position}>
+				<option value="Manager">Manager</option>
+				<option value="Verkäufer">Verkäufer</option>
+				<option value="Azubi">Azubi</option>
+				<option value="Entwickler">Entwickler</option>
 			</select>
 		</div>
 		<div class="col-md-6">
@@ -85,17 +91,17 @@
 			</select>
 		</div>
 		<div class="col-md-6">
-			<label class="form-label" for="">Arbeitszeit</label>
-			<select id="" class="form-select">
-				<option value="1">Vollzeit</option>
-				<option value="2">Teilzeit</option>
-				<option value="3">Minijob</option>
+			<label class="form-label" for="form_of_employment">Arbeitszeit</label>
+			<select id="form_of_employment" class="form-select" bind:value={user.form_of_employment}>
+				<option value="Vollzeit">Vollzeit</option>
+				<option value="Teilzeit">Teilzeit</option>
+				<option value="Minijob">Minijob</option>
 			</select>
 		</div>
 		<div class="col-md-6">
 			<label class="form-label" for="holidaysPerYear">Urlaubstage</label>
 			<input
-				bind:value={user.holydays_per_year}
+				bind:value={user.holidays_per_year}
 				class="form-control"
 				type="number"
 				name="holidaysPerYear"
@@ -109,7 +115,7 @@
 			<button class="btn btn-primary" disabled={is_loading}>
 				{#if is_loading}
 					<div class="spinner-border spinner-border-sm" role="status">
-						<span class="visually-hidden">Loading...</span>
+						<span class="visually-hidden">Einen Moment...</span>
 					</div>
 				{/if}
 				{button_label}
