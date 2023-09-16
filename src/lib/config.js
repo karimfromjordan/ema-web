@@ -1,3 +1,3 @@
 export default {
-  copyright: 'Winter Rose LLC'
+  copyright: 'Oktapod Gmbh'
 }

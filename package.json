@@ -34,6 +34,7 @@
 		"@fullcalendar/timegrid": "^6.1.8",
 		"bootstrap-icons": "^1.11.0",
 		"chart.js": "^4.4.0",
-		"de": "link:@fullcalendar/core/locales/de"
+		"de": "link:@fullcalendar/core/locales/de",
+		"firebase": "^10.4.0"
 	}
 }

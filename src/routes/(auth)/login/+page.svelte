@@ -3,13 +3,17 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import Card from '../Card.svelte';
 	import config from '$lib/config';
+	import { is_loading, auth } from '$lib/stores/firebase.js';
+	import { goto } from '$app/navigation';
 
-	let email = '';
-	let password = '';
+	let email = 'demo@example.com';
+	let password = '0123456789';
 	let remember_me = false;
 
 	/** @param {SubmitEvent} e */
-	async function handle_signin_form(e) {}
+	async function handle_signin_form(e) {
+		auth.sign_in(email, password).then(() => goto('/dashboard'));
+	}
 </script>
 
 <Card title="Willkommen!" subtitle="Logge Dich ein">
@@ -61,13 +65,13 @@
 				</div>
 			</div>
 
-			<button class="btn btn-primary w-md waves-effect waves-light" disabled={true}>
-				{#if true}
+			<button class="btn btn-primary w-md waves-effect waves-light" disabled={$is_loading}>
+				{#if $is_loading}
 					<div class="spinner-border spinner-border-sm" role="status">
-						<span class="visually-hidden">Loading...</span>
+						<span class="visually-hidden">{$is_loading ? 'Einen Moment...' : 'Einloggen'}</span>
 					</div>
 				{/if}
-				Einloggen
+				{$is_loading ? 'Einen Moment...' : 'Einloggen'}
 			</button>
 		</form>
 

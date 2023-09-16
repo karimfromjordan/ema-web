@@ -9,10 +9,6 @@
 				<slot />
 				<div class="mt-5 text-center">
 					<p>
-						Don&apos;t have an account?
-						<a href="/signup" class="fw-medium text-primary">Signup now</a>
-					</p>
-					<p>
 						&copy; {new Date().getFullYear()}
 						{config.copyright}
 					</p>

@@ -1,5 +1,8 @@
 <script>
-	import { onNavigate } from '$app/navigation';
+	import Alerts from '$lib/components/Alerts.svelte';
+	import { auth } from '$lib/stores/firebase';
+
+	import { goto, onNavigate } from '$app/navigation';
 
 	onNavigate(async (navigation) => {
 		if (!document.startViewTransition) return;
@@ -11,7 +14,11 @@
 			});
 		});
 	});
+
+	$: if ($auth === null) goto('/login');
 </script>
+
+<Alerts />
 
 <svg style="display: none;">
 	<defs>
@@ -276,4 +283,12 @@
 	</defs>
 </svg>
 
-<slot />
+{#if $auth === undefined}
+	<div class="min-vh-100 d-flex justify-content-center align-items-center">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+	</div>
+{:else}
+	<slot />
+{/if}
