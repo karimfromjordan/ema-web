@@ -1,11 +1,6 @@
 <script context="module">
 	const data = [
 		{
-			icon: 'home',
-			title: 'Dashboard',
-			path: ''
-		},
-		{
 			icon: 'task-square',
 			title: 'Wochenplanung',
 			path: '/dashboard/week-calendar'
@@ -33,17 +28,17 @@
 		{
 			icon: 'briefcase',
 			title: 'Anbieter',
-			path: ''
+			path: '/dashboard/providers'
 		},
 		{
 			icon: 'chart',
 			title: 'Provision',
-			path: ''
+			path: '/dashboard/commission'
 		},
 		{
 			icon: 'document-text',
 			title: 'Verträge',
-			path: ''
+			path: '/dashboard/contracts'
 		}
 	];
 </script>
