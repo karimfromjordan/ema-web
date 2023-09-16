@@ -16,6 +16,6 @@
 			<h1 class="fs-5">Filiale erstellen</h1>
 		</div>
 
-		<ShopForm on:submit={on_submit} button_label={$is_loading ? 'Einen Moment...' : 'Erstellen'} />
+		<ShopForm on:submit={on_submit} button_label={'Erstellen'} is_loading={$is_loading} />
 	</div>
 </div>

@@ -131,7 +131,7 @@
 			<button class="btn btn-primary" disabled={is_loading}>
 				{#if is_loading}
 					<div class="spinner-border spinner-border-sm" role="status">
-						<span class="visually-hidden">Einen Moment...</span>
+						<span class="visually-hidden">Loading...</span>
 					</div>
 				{/if}
 				{button_label}

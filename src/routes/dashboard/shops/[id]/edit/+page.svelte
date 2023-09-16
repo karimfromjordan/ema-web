@@ -18,7 +18,8 @@
 			<ShopForm
 				on:submit={on_submit}
 				data={$shops.shop}
-				button_label={$is_loading ? 'Einen Moment...' : 'Speichern'}
+				button_label="Speichern"
+				is_loading={$is_loading}
 			/>
 		</div>
 	</div>

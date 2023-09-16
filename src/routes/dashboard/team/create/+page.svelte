@@ -16,9 +16,6 @@
 			<h1 class="fs-5">Mitarbeiter erstellen</h1>
 		</div>
 
-		<EmployeeForm
-			on:submit={on_submit}
-			button_label={$is_loading ? 'Einen Moment...' : 'Erstellen'}
-		/>
+		<EmployeeForm on:submit={on_submit} is_loading={$is_loading} button_label="Erstellen" />
 	</div>
 </div>

@@ -11,14 +11,14 @@
 			path: '/dashboard/shops'
 		},
 		{
+			icon: 'calendar',
+			title: 'Kalender',
+			path: '/dashboard/events'
+		},
+		{
 			icon: 'task-square',
 			title: 'Wochenplanung',
 			path: '/dashboard/week-calendar'
-		},
-		{
-			icon: 'calendar',
-			title: 'Kalender',
-			path: '/dashboard/month-calendar'
 		},
 		{
 			icon: 'profile-2user',

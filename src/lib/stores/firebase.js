@@ -230,8 +230,8 @@ function create_shops_store() {
 			const doc_ref = doc(await db(), 'shops', id);
 
 			await updateDoc(doc_ref, data)
-				.then((docRef) => alerts.success('Mitarbeiter wurde aktualisiert.'))
-				.catch((error) => alerts.danger('Mitarbeiter konnte nicht aktualisiert werden.'))
+				.then((docRef) => alerts.success('Filiale wurde aktualisiert.'))
+				.catch((error) => alerts.danger('Filiale konnte nicht aktualisiert werden.'))
 				.finally(() => _is_loading.set(false));
 		},
 		/**
@@ -284,11 +284,11 @@ function create_events_store() {
 
 			const { doc, collection, setDoc } = await import('firebase/firestore');
 
-			const ref = doc(collection(await db(), 'shops'));
+			const ref = doc(collection(await db(), 'events'));
 
 			await setDoc(ref, { ...data, id: ref.id, v })
 				.then((docRef) => alerts.success('Event wurde erstellt.'))
-				.catch((error) => alerts.danger('Event konnte nicht aktualisiert werden.'))
+				.catch((error) => alerts.danger('Event konnte nicht erstellt werden.'))
 				.finally(() => _is_loading.set(false));
 		},
 		async update(id, data) {
@@ -319,5 +319,6 @@ function create_events_store() {
 const auth = create_auth_store();
 const users = create_users_store();
 const shops = create_shops_store();
+const events = create_events_store();
 
-export { is_loading, auth, users, shops };
+export { is_loading, auth, users, shops, events };

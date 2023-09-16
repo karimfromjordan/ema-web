@@ -13,8 +13,11 @@
 		reason: 'holidays',
 		notes: '',
 		status: 'pending',
-		user_id: ''
+		employee_id: ''
 	};
+
+	export let button_label = 'Save';
+	export let is_loading = false;
 
 	const dispatch = createEventDispatcher();
 </script>
@@ -27,6 +30,8 @@
 					{#await users.list_all then _}
 						<Combobox
 							label="Mitarbeiter"
+							name="employee_id"
+							bind:value={data.employee_id}
 							options={$users.list.map((u) => ({
 								text: u.name,
 								value: u.id,
@@ -57,7 +62,7 @@
 					<label class="form-label" for="start">Von</label>
 					<input
 						class="form-control"
-						bind:value={data.start}
+						bind:value={data.starts_at}
 						type="date"
 						id="start"
 						required
@@ -69,22 +74,35 @@
 					<label class="form-label" for="end">Bis</label>
 					<input
 						class="form-control"
-						bind:value={data.end}
+						bind:value={data.ends_at}
 						type="date"
 						id="end"
 						required
-						min={data.start}
+						min={data.starts_at}
 					/>
 				</div>
 
 				<div class="mb-3">
 					<label for="notes" class="form-label">Notizen (optional)</label>
-					<textarea class="form-control" id="notes" rows="3" />
+					<textarea class="form-control" id="notes" rows="3" bind:value={data.notes} />
 				</div>
 			</div>
 		</div>
 		<div class="col-6">
 			<ImageSelector />
+		</div>
+	</div>
+
+	<div class="row mt-4">
+		<div class="col">
+			<button class="btn btn-primary" disabled={is_loading}>
+				{#if is_loading}
+					<div class="spinner-border spinner-border-sm" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				{/if}
+				{button_label}
+			</button>
 		</div>
 	</div>
 </form>

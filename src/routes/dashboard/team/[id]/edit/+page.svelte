@@ -18,7 +18,8 @@
 			<EmployeeForm
 				user={$users.user}
 				on:submit={on_submit}
-				button_label={$is_loading ? 'Einen Moment...' : 'Speichern'}
+				is_loading={$is_loading}
+				button_label="Speichern"
 			/>
 		</div>
 	</div>

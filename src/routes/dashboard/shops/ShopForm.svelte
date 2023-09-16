@@ -19,7 +19,6 @@
 	};
 
 	export let button_label = 'Save';
-
 	export let is_loading = false;
 
 	const dispatch = createEventDispatcher();
